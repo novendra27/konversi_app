@@ -1,16 +1,24 @@
-# konversi_app
+#conversion_app
 
-A new Flutter project.
+This app allows users to search forex data by currency or country and perform forex conversions.
 
-## Getting Started
+## How to run the app
 
-This project is a starting point for a Flutter application.
+1. Clone this repository.
+2. Navigate to the project directory.
+3. Run `flutter pub get` to download the dependencies.
+4. Run the application with `flutter run`.
 
-A few resources to get you started if this is your first Flutter project:
+## Tools version
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. Flutter 3.22.1
+2. Dart 3.4.1
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Project Structure
+
+- `lib/`
+  - `models/`: contains the data model.
+  - `controllers/`: contains the data retrieval logic.
+  - `views/`: contains the user interface.
+  - `main.dart`: contains the main settings of the application.
+
