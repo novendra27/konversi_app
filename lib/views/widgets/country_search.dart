@@ -11,7 +11,8 @@ class CountrySearch extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
-        labelText: 'Country',
+        labelText: 'Search Country',
+        border: UnderlineInputBorder(),
         suffixIcon: IconButton(
           icon: Icon(Icons.search),
           onPressed: onSearch,

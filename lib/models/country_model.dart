@@ -23,15 +23,15 @@ class Country {
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
-      code2: json['code2'],
-      code3: json['code3'],
-      codeNo: json['codeNo'],
-      country: json['country'],
-      currency: json['currency'],
-      currencyCode: json['currencyCode'],
-      region: json['region'],
-      subRegion: json['subRegion'],
-      img: json['img'],
+      code2: json['code2'] ?? '',
+      code3: json['code3'] ?? '',
+      codeNo: json['codeNo'] ?? 0,
+      country: json['country'] ?? '',
+      currency: json['currency'] ?? '',
+      currencyCode: json['currencyCode'] ?? '',
+      region: json['region'] ?? '',
+      subRegion: json['subRegion'] ?? '',
+      img: json['img'] ?? '',
     );
   }
 }

@@ -4,6 +4,6 @@ class Forex {
   Forex({required this.rates});
 
   factory Forex.fromJson(Map<String, dynamic> json) {
-    return Forex(rates: json['data'][0]);
+    return Forex(rates: json['data'][0] ?? {});
   }
 }

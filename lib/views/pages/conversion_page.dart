@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import '../../controllers/api_controller.dart';
 import '../../models/country_model.dart';
 import '../../models/forex_model.dart';
+import '../../theme/app_pallete.dart';
+import '../widgets/bottom_app_bar_widget.dart';
 import '../widgets/conversion_result.dart';
 import '../widgets/country_dropdown.dart';
 
-class ConversionPage extends StatefulWidget {
-  final Country country;
 
-  ConversionPage({required this.country});
+class ConversionPage extends StatefulWidget {
 
   @override
   _ConversionPageState createState() => _ConversionPageState();
@@ -18,6 +18,7 @@ class ConversionPage extends StatefulWidget {
 
 class _ConversionPageState extends State<ConversionPage> {
   late TextEditingController _amountController;
+  Country? _sourceCountry;
   Country? _targetCountry;
   late Future<List<Country>> futureCountries;
   Future<Forex>? futureForexRates;  // Make futureForexRates nullable
@@ -36,10 +37,10 @@ class _ConversionPageState extends State<ConversionPage> {
   }
 
   void _convertCurrency() {
-    if (_targetCountry != null) {
+    if (_sourceCountry != null && _targetCountry != null) {
       setState(() {
         futureForexRates = Provider.of<ApiController>(context, listen: false)
-            .fetchForexRates(widget.country.currencyCode);
+            .fetchForexRates(_sourceCountry!.currencyCode);
       });
     }
   }
@@ -48,8 +49,13 @@ class _ConversionPageState extends State<ConversionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forex Calculator'),
+        title: Text(
+          'Currency Converter',
+          style: TextStyle(color: AppPallete.white),
+        ),
+        backgroundColor: AppPallete.colorPrimary,
       ),
+      bottomNavigationBar: bottomAppBarWidget(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -64,14 +70,28 @@ class _ConversionPageState extends State<ConversionPage> {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('No countries found'));
                 } else {
-                  return CountryDropdown(
-                    countries: snapshot.data!,
-                    selectedCountry: _targetCountry,
-                    onChanged: (value) {
-                      setState(() {
-                        _targetCountry = value;
-                      });
-                    },
+                  return Column(
+                    children: [
+                      CountryDropdown(
+                        countries: snapshot.data!,
+                        selectedCountry: _sourceCountry,
+                        onChanged: (value) {
+                          setState(() {
+                            _sourceCountry = value;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      CountryDropdown(
+                        countries: snapshot.data!,
+                        selectedCountry: _targetCountry,
+                        onChanged: (value) {
+                          setState(() {
+                            _targetCountry = value;
+                          });
+                        },
+                      ),
+                    ],
                   );
                 }
               },
@@ -104,7 +124,7 @@ class _ConversionPageState extends State<ConversionPage> {
                         final convertedAmount = amount * rate;
 
                         return ConversionResult(
-                          fromCountry: widget.country.country,
+                          fromCountry: _sourceCountry!.country,
                           toCountry: _targetCountry!.country,
                           amount: amount,
                           convertedAmount: convertedAmount,

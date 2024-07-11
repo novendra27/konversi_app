@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/api_controller.dart';
 import '../../models/country_model.dart';
+import '../../theme/app_pallete.dart';
+import '../widgets/bottom_app_bar_widget.dart';
 import '../widgets/country_list.dart';
 import '../widgets/country_search.dart';
 
@@ -19,7 +22,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    futureCountries = Provider.of<ApiController>(context, listen: false).fetchCountries();
+    futureCountries =
+        Provider.of<ApiController>(context, listen: false).fetchCountries();
   }
 
   @override
@@ -32,22 +36,47 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forex App'),
+        title: Text(
+          'Forex Currency',
+          style: TextStyle(color: AppPallete.white),
+        ),
+        backgroundColor: AppPallete.colorPrimary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      bottomNavigationBar: bottomAppBarWidget(),
+      body: Container(
+        color: AppPallete.white,
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
             CountrySearch(
               controller: _searchController,
               onSearch: () {
                 setState(() {
-                  futureCountries = Provider.of<ApiController>(context, listen: false)
+                  futureCountries = Provider.of<ApiController>(context,
+                          listen: false)
                       .fetchCountries()
-                      .then((countries) => countries.where((country) => country.country.toLowerCase().contains(_searchController.text.toLowerCase())).toList());
+                      .then((countries) => countries
+                          .where((country) => country.country
+                              .toLowerCase()
+                              .contains(_searchController.text.toLowerCase()))
+                          .toList());
                 });
               },
             ),
+            const Gap(20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Country List',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const Gap(10),
             Expanded(
               child: FutureBuilder<List<Country>>(
                 future: futureCountries,
@@ -70,76 +99,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-
-
-// import 'package:flutter/material.dart';
-// import '../widgets/search_input_widget.dart';
-// import '../../controllers/forex_controller.dart';
-// import '../../models/forex_model.dart';
-
-// class HomePage extends StatefulWidget {
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage> {
-//   final _forexController = ForexController();
-//   List<CountryForex>? _countryForexList;
-
-//   void _searchByCountry() async {
-//     final countryForexList = await _forexController.fetchForexByCountry();
-//     setState(() {
-//       _countryForexList = countryForexList;
-//     });
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _searchByCountry();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Forex Converter'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             Text(
-//               'Available Countries',
-//               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 16),
-//             SearchInput(
-//               label: 'Search Country',
-//               onSearch: (value) {
-//                 _searchByCountry();
-//               },
-//             ),
-//             Expanded(
-//               child: _countryForexList == null
-//                   ? Center(child: CircularProgressIndicator())
-//                   : ListView.builder(
-//                       itemCount: _countryForexList!.length,
-//                       itemBuilder: (context, index) {
-//                         final countryForex = _countryForexList![index];
-//                         return ListTile(
-//                           title: Text('${countryForex.country} (${countryForex.currencyCode})'),
-//                           subtitle: Text('Currency: ${countryForex.currency}'),
-//                           leading: Image.network(countryForex.img),
-//                         );
-//                       },
-//                     ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

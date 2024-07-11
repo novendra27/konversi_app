@@ -7,20 +7,24 @@ class CountryDropdown extends StatelessWidget {
   final Country? selectedCountry;
   final ValueChanged<Country?> onChanged;
 
-  CountryDropdown({required this.countries, this.selectedCountry, required this.onChanged});
+  CountryDropdown({
+    required this.countries,
+    required this.selectedCountry,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<Country>(
-      decoration: InputDecoration(labelText: 'Target Country'),
+    return DropdownButton<Country>(
       value: selectedCountry,
+      hint: Text('Select a country'),
+      onChanged: onChanged,
       items: countries.map((Country country) {
         return DropdownMenuItem<Country>(
           value: country,
           child: Text(country.country),
         );
       }).toList(),
-      onChanged: onChanged,
     );
   }
 }

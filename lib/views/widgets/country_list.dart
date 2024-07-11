@@ -15,19 +15,19 @@ class CountryList extends StatelessWidget {
       itemBuilder: (context, index) {
         final country = countries[index];
         return ListTile(
-          leading: Image.network(country.img),
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(country.img),
+              ),
+            ),
+          ),
           title: Text(country.country),
           subtitle: Text(country.currency),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ConversionPage(
-                  country: country,
-                ),
-              ),
-            );
-          },
         );
       },
     );

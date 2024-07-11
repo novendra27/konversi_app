@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:konversi_app/views/pages/conversion_page.dart';
 import 'package:provider/provider.dart';
 
 import 'controllers/api_controller.dart';
@@ -21,6 +22,10 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: HomePage(),
+        routes: {
+          '/home': (context) => HomePage(),
+          '/conversion': (context) => ConversionPage(),
+        },
       ),
     );
   }
