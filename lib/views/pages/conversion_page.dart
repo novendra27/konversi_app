@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../controllers/api_controller.dart';
@@ -9,9 +10,7 @@ import '../widgets/bottom_app_bar_widget.dart';
 import '../widgets/conversion_result.dart';
 import '../widgets/country_dropdown.dart';
 
-
 class ConversionPage extends StatefulWidget {
-
   @override
   _ConversionPageState createState() => _ConversionPageState();
 }
@@ -21,13 +20,14 @@ class _ConversionPageState extends State<ConversionPage> {
   Country? _sourceCountry;
   Country? _targetCountry;
   late Future<List<Country>> futureCountries;
-  Future<Forex>? futureForexRates;  // Make futureForexRates nullable
+  Future<Forex>? futureForexRates; // Make futureForexRates nullable
 
   @override
   void initState() {
     super.initState();
     _amountController = TextEditingController();
-    futureCountries = Provider.of<ApiController>(context, listen: false).fetchCountries();
+    futureCountries =
+        Provider.of<ApiController>(context, listen: false).fetchCountries();
   }
 
   @override
@@ -56,85 +56,137 @@ class _ConversionPageState extends State<ConversionPage> {
         backgroundColor: AppPallete.colorPrimary,
       ),
       bottomNavigationBar: bottomAppBarWidget(),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            FutureBuilder<List<Country>>(
-              future: futureCountries,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No countries found'));
-                } else {
-                  return Column(
-                    children: [
-                      CountryDropdown(
-                        countries: snapshot.data!,
-                        selectedCountry: _sourceCountry,
-                        onChanged: (value) {
-                          setState(() {
-                            _sourceCountry = value;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      CountryDropdown(
-                        countries: snapshot.data!,
-                        selectedCountry: _targetCountry,
-                        onChanged: (value) {
-                          setState(() {
-                            _targetCountry = value;
-                          });
-                        },
-                      ),
-                    ],
-                  );
-                }
-              },
-            ),
-            TextField(
-              controller: _amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
+            textfieldCountryDropdown(),
+            const Gap(20),
             ElevatedButton(
               onPressed: _convertCurrency,
               child: Text('Convert'),
             ),
-            SizedBox(height: 20),
+            const Gap(20),
             futureForexRates == null
                 ? Container()
-                : FutureBuilder<Forex>(
-                    future: futureForexRates,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData) {
-                        return Center(child: Text('No data available'));
-                      } else {
-                        final rate = snapshot.data!.rates[_targetCountry!.currencyCode];
-                        final amount = double.parse(_amountController.text);
-                        final convertedAmount = amount * rate;
-
-                        return ConversionResult(
-                          fromCountry: _sourceCountry!.country,
-                          toCountry: _targetCountry!.country,
-                          amount: amount,
-                          convertedAmount: convertedAmount,
-                        );
-                      }
-                    },
-                  ),
+                : calculateConversionResult(),
           ],
         ),
       ),
+    );
+  }
+
+  FutureBuilder<Forex> calculateConversionResult() {
+    return FutureBuilder<Forex>(
+      future: futureForexRates,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData) {
+          return Center(child: Text('No data available'));
+        } else {
+          final rate = snapshot.data!.rates[_targetCountry!.currencyCode];
+          final amount = double.parse(_amountController.text);
+          final convertedAmount = amount * rate;
+
+          return ConversionResult(
+            fromCountry: _sourceCountry!.country,
+            toCountry: _targetCountry!.country,
+            amount: amount,
+            convertedAmount: convertedAmount,
+          );
+        }
+      },
+    );
+  }
+
+  FutureBuilder<List<Country>> textfieldCountryDropdown() {
+    return FutureBuilder<List<Country>>(
+      future: futureCountries,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No countries found'));
+        } else {
+          return Container(
+            padding: const EdgeInsets.all(22.0),
+            decoration: BoxDecoration(
+              color: AppPallete.colorPrimary.withOpacity(0.87),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Gap(12),
+                const Text(
+                  "From",
+                  style: TextStyle(
+                    color: AppPallete.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CountryDropdown(
+                  countries: snapshot.data!,
+                  selectedCountry: _sourceCountry,
+                  onChanged: (value) {
+                    setState(() {
+                      _sourceCountry = value;
+                    });
+                  },
+                ),
+                const Gap(20),
+                const Text(
+                  "To",
+                  style: TextStyle(
+                    color: AppPallete.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CountryDropdown(
+                  countries: snapshot.data!,
+                  selectedCountry: _targetCountry,
+                  onChanged: (value) {
+                    setState(() {
+                      _targetCountry = value;
+                    });
+                  },
+                ),
+                const Gap(10),
+                TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Amount',
+                    labelStyle: TextStyle(
+                      color: AppPallete.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppPallete.colorGray),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppPallete.colorGray),
+                    ),
+                  ),
+                  style: const TextStyle(
+                    color: AppPallete.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Gap(28),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }
