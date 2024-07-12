@@ -57,15 +57,10 @@ class _ConversionPageState extends State<ConversionPage> {
       ),
       bottomNavigationBar: bottomAppBarWidget(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
-            textfieldCountryDropdown(),
-            const Gap(20),
-            ElevatedButton(
-              onPressed: _convertCurrency,
-              child: Text('Convert'),
-            ),
+            formConversion(),
             const Gap(20),
             futureForexRates == null
                 ? Container()
@@ -102,7 +97,7 @@ class _ConversionPageState extends State<ConversionPage> {
     );
   }
 
-  FutureBuilder<List<Country>> textfieldCountryDropdown() {
+  FutureBuilder<List<Country>> formConversion() {
     return FutureBuilder<List<Country>>(
       future: futureCountries,
       builder: (context, snapshot) {
@@ -181,7 +176,28 @@ class _ConversionPageState extends State<ConversionPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const Gap(28),
+                const Gap(35),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _convertCurrency,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppPallete.colorPrimary.withOpacity(0.5),
+                      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 118.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: Text(
+                      'Calculate',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: AppPallete.white,
+                      ),
+                    ),
+                  ),
+                ),
+                const Gap(20),
               ],
             ),
           );
