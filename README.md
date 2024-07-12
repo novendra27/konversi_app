@@ -31,7 +31,7 @@ This app allows users to search forex data by currency or country and perform fo
 ## Interface app
 
 - Home page:
-![Home page](https://github.com/novendra27/konversi_app/blob/main/screenshots/home_page_screenshot.jpg)
+<img src="https://github.com/novendra27/konversi_app/blob/main/screenshots/home_page_screenshot.jpg" alt="Home page" width="400"/>
 
 - Conversion page:
-![Conversion page](https://github.com/novendra27/konversi_app/blob/main/screenshots/conversion_page_screenshot.jpg)
+<img src="https://github.com/novendra27/konversi_app/blob/main/screenshots/conversion_page_screenshot.jpg" alt="Home page" width="400"/>
