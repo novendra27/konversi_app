@@ -25,7 +25,7 @@ This app allows users to search forex data by currency or country and perform fo
 
 ## Algorithm flow
 
-- Main Algorithm: Display Views -> Algorithm API -> Display Data -> User Interaction -> Algorithm API -> Process Data -> Display Results.
+- Main Algorithm: Display Views -> API Algorithm -> Display Data -> User Interaction -> API Algorithm -> Process Data -> Display Results.
 - API Algorithm: Accessing API -> Parsing JSON Data into Model Object.
 
 ## Interface app
